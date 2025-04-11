@@ -24,7 +24,7 @@ The application features a beautiful dark-themed UI with smooth animations, mult
 ## 🖥️ Screenshots
 
 <div align="center">
-  <img src="https://i.imgur.com/placeholder-screenshot1.png" alt="Vibe Writer Screenshot" width="80%">
+  <img src="https://iili.io/3cAEnsV.md.png" alt="Vibe Writer Screenshot" width="80%">
 </div>
 
 ## 🚀 Getting Started
