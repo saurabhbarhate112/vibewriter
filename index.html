@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibe Writer - AI Article Generator</title>
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">        <!-- API Key Modal -->
+        <div id="api-key-modal" class="modal">
+            <div class="modal-content card">
+                <h2>Welcome to Vibe Writer</h2>
+                <p class="subtitle">To generate articles, you'll need a Gemini API key</p>
+                
+                <form id="api-key-form">
+                    <div class="form-group">
+                        <label for="api-key">Enter your Gemini API Key</label>
+                        <div class="api-key-input-container">
+                            <input type="password" id="api-key" name="api-key" placeholder="Enter your Gemini API key" required>
+                            <button type="button" id="toggle-api-key" class="icon-btn">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <p class="api-key-help">
+                            <i class="fas fa-info-circle"></i> 
+                            Don't have a key? <a href="https://ai.google.dev/" target="_blank">Get one here</a>
+                        </p>
+                    </div>
+                    
+                    <div class="remember-key-option">
+                        <input type="checkbox" id="remember-key" name="remember-key" checked>
+                        <label for="remember-key">Remember my API key on this device</label>
+                    </div>
+                    
+                    <button type="submit" class="generate-btn">
+                        <span class="btn-text">Save API Key</span>
+                        <div class="loading-spinner"></div>
+                    </button>
+                </form>
+            </div>
+        </div>        <header>
+            <div class="logo-container">
+                <div class="logo">
+                    <i class="fas fa-feather-alt"></i>
+                </div>
+                <h1>Vibe Writer</h1>
+            </div>
+        </header>
+
+        <main>
+            <div class="app-content">
+                <section class="input-section card">
+                    <h2>Create Your Article</h2>
+                    <p class="subtitle">Generate professionally written articles with Gemini AI</p>
+                    
+                    <form id="article-form">
+                        <div class="form-group">
+                            <label for="topic">Topic</label>
+                            <input type="text" id="topic" name="topic" placeholder="Enter the main topic of your article" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="length">Article Length</label>
+                            <select id="length" name="length">
+                                <option value="short">Short (~300 words)</option>
+                                <option value="medium" selected>Medium (~600 words)</option>
+                                <option value="long">Long (~1000 words)</option>
+                                <option value="detailed">Detailed (~1500 words)</option>
+                            </select>
+                        </div>                            <div class="form-group">
+                                <label for="tone">Writing Style</label>
+                                <select id="tone" name="tone">
+                                    <option value="informative" selected>Informative</option>
+                                    <option value="professional">Professional</option>
+                                    <option value="casual">Casual</option>
+                                    <option value="persuasive">Persuasive</option>
+                                    <option value="creative">Creative</option>
+                                    <option value="academic">Academic</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="keywords">
+                                    Custom Keywords 
+                                    <span class="tooltip" data-tooltip="Add keywords that should be included in your article">
+                                        <i class="fas fa-info-circle"></i>
+                                    </span>
+                                </label>
+                                <div class="keywords-container">
+                                    <div class="keywords-input-wrapper">
+                                        <input type="text" id="keyword-input" placeholder="Type keyword and press Enter">
+                                        <button type="button" id="add-keyword-btn" class="keyword-add-btn">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                    <div class="keywords-tags" id="keywords-tags">
+                                        <!-- Keywords will be added here dynamically -->
+                                    </div>
+                                    <input type="hidden" id="keywords" name="keywords" value="">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group slider-group">
+                                <label for="humanlike">Human-like Writing</label>
+                                <div class="slider-container">
+                                    <input type="range" id="humanlike" name="humanlike" min="1" max="10" value="7">
+                                    <div class="slider-value">7</div>
+                                </div>
+                                <div class="slider-labels">
+                                    <span>AI Style</span>
+                                    <span>Human Style</span>
+                                </div>
+                            </div>
+                        
+                        <button type="submit" class="generate-btn">
+                            <span class="btn-text">Generate Article</span>
+                            <div class="loading-spinner"></div>
+                        </button>
+                    </form>
+                </section>
+                
+                <section class="output-section card hidden" id="article-output">
+                    <div class="output-header">
+                        <h2 id="article-title">Your Generated Article</h2>
+                        <div class="action-buttons">
+                            <button id="copy-btn" class="icon-btn" title="Copy to clipboard">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <button id="download-btn" class="icon-btn" title="Download as text file">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="article-meta">
+                        <span id="word-count">0 words</span>
+                        <span id="read-time">0 min read</span>
+                    </div>                    <div class="editor-wrapper">
+                        <div class="editor-toolbar">
+                            <div class="toolbar-group">
+                                <button class="editor-btn" data-command="bold" title="Bold"><i class="fas fa-bold"></i></button>
+                                <button class="editor-btn" data-command="italic" title="Italic"><i class="fas fa-italic"></i></button>
+                                <button class="editor-btn" data-command="underline" title="Underline"><i class="fas fa-underline"></i></button>
+                            </div>
+                            <div class="toolbar-group">
+                                <button class="editor-btn" data-command="formatBlock" data-value="h1" title="Heading 1"><i class="fas fa-heading"></i><span>1</span></button>
+                                <button class="editor-btn" data-command="formatBlock" data-value="h2" title="Heading 2"><i class="fas fa-heading"></i><span>2</span></button>
+                                <button class="editor-btn" data-command="formatBlock" data-value="h3" title="Heading 3"><i class="fas fa-heading"></i><span>3</span></button>
+                            </div>
+                            <div class="toolbar-group">
+                                <button class="editor-btn" data-command="insertUnorderedList" title="Bullet List"><i class="fas fa-list-ul"></i></button>
+                                <button class="editor-btn" data-command="insertOrderedList" title="Numbered List"><i class="fas fa-list-ol"></i></button>
+                            </div>
+                            <div class="toolbar-group">
+                                <button class="editor-btn" data-command="justifyLeft" title="Align Left"><i class="fas fa-align-left"></i></button>
+                                <button class="editor-btn" data-command="justifyCenter" title="Align Center"><i class="fas fa-align-center"></i></button>
+                                <button class="editor-btn" data-command="justifyRight" title="Align Right"><i class="fas fa-align-right"></i></button>
+                            </div>
+                            <div class="toolbar-group">
+                                <button class="editor-btn" data-command="createLink" title="Insert Link"><i class="fas fa-link"></i></button>
+                                <button class="editor-btn" data-command="insertImage" title="Insert Image"><i class="fas fa-image"></i></button>
+                            </div>
+                        </div>
+                        <div class="wysiwyg-editor" id="article-content" contenteditable="true">
+                            <!-- Generated content will appear here -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+          <footer>
+            <p>Powered by Gemini-2.0-flash AI</p>
+            <p>&copy; <span id="current-year">2025</span> Vibe Writer</p>
+        </footer>
+    </div>    <script src="./script.js"></script>
+    <script src="./keywords.js"></script>
+</body>
+</html>
